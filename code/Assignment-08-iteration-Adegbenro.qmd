@@ -120,17 +120,17 @@ myplot = function(df, x, y) {
          aes(x = x,
              y = y,
              color = x)) +
-    geom_boxplot(width = 0.3) +
+    geom_boxplot(width = 0.4) +
     geom_jitter() +
     scale_color_brewer(palette = "Dark2") +
     theme_minimal() +
     theme(legend.position = "none",
           axis.line = element_line(linewidth = 0.2),
-        axis.text = element_text(size= 8, 
+        axis.text = element_text(size= 9, 
                                  color = "black"),
         axis.ticks = element_line(linewidth = 0.3),
         axis.title = element_text(hjust = 0.5,
-                                  size = 8)) +
+                                  size = 9)) +
     labs(x= "Potassium Rate (kg/ha)", 
        y= "K Leaf Concentration (%)")
   plots
@@ -159,14 +159,15 @@ location = soybean_w %>%
   select(Tifton:Macon) %>%
   colnames()
 
-# use the map() function to apply the boxplot function for each location
+# use the map() function to apply the box plot function for each location
 location_plot = map(location,
                     ~myplot(df = soybean_w,
                             x = krate_kgha, 
                             y = .x) +
-                      labs(title = paste(.x)) +
-                      theme(plot.title = element_text(size = 9,
-                                                      face = "bold")))
+                      labs(title = paste(.x)) + # add location title
+                      theme(plot.title = 
+                              element_text(size = 9,
+                                           face = "bold"))) # modify location title
 ```
 
 Combine the plots for each location into one graph
@@ -175,14 +176,16 @@ Combine the plots for each location into one graph
 #| warning: false
 
 
-allplots = location_plot %>%
-  marrangeGrob(nrow = 2,
-               ncol = 2,
-               top = NULL)
+soyplot = marrangeGrob(location_plot,
+                       nrow = 2,
+                       ncol = 2,
+                       top = NULL)
+soyplot
 
-allplots
 
-ggsave("all_plots.png", path = "../output/")
+ggsave("soyplot.png", 
+       plot = soyplot,
+       path = "../output/")
 ```
 
 # Submitting your work  
